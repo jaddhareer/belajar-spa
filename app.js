@@ -1,28 +1,29 @@
-const barang = [
-    {nama: 'Pulpen', stok: '20'},
-    {nama: 'Buku', stok: '50'},
-    {nama: 'Pensil', stok: '20'}
-];
-
 const container = document.querySelector('#daftar-barang');
-const list = document.querySelectorAll('li');
 
-list.forEach(element => {
-    element.textContent = "Barang A"
-});
+async function ambilData() {
+    try {
+        const response = await fetch('api.php');
+        if (!response.ok) {
+            throw new Error(`Server merespons dengan pesan: ${response.status}`);
+        }
+        const data = await response.json();
+        data.forEach(item => {
+            const list = document.createElement('li');
+            list.textContent = `${item.nama} (Stok: ${item.stock})`;
+            container.appendChild(list);
+        });
+    } catch (error) {
+        console.error('Gagal mengambil data:', error);
+    }
+}
 
-container.addEventListener('click', function(e) {
+ambilData();
+
+container.addEventListener('click', (e) => {
     if(e.target.tagName === 'LI') {
         const detail = document.getElementById('detail');
         detail.textContent = e.target.textContent;
-        console.log(e.target)
     }
-});
-
-barang.forEach(item => {
-    const li = document.createElement('li');
-    li.textContent = `${item.nama} (Stok: ${item.stok})`;
-    container.appendChild(li);
 });
 
 const tombol = document.getElementById('tombol-tambah');
