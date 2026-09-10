@@ -7,6 +7,7 @@
 </head>
 <body>
     <h2>Daftar Barang</h2>
+    <button id="tombol-tambah">Tambah Barang</button>
     <ul id="daftar-barang">
     </ul>
     <div id="detail"></div>

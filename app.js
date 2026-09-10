@@ -17,10 +17,19 @@ container.addEventListener('click', function(e) {
         detail.textContent = e.target.textContent;
         console.log(e.target)
     }
-})
+});
 
 barang.forEach(item => {
     const li = document.createElement('li');
     li.textContent = `${item.nama} (Stok: ${item.stok})`;
     container.appendChild(li);
+});
+
+const tombol = document.getElementById('tombol-tambah');
+
+tombol.addEventListener('click', (e)=> {
+    e.preventDefault();
+    const addlist = document.createElement('li');
+    addlist.textContent = 'Barang Baru';
+    container.appendChild(addlist);
 });
