@@ -3,10 +3,10 @@
 header('Content-Type: application/json');
 
 $barang = [
-    ['nama' => 'Pensil', 'stock' => 12],
-    ['nama' => 'Buku', 'stock' => 20],
-    ['nama' => 'Pulpen', 'stock' => 100],
-    ['nama' => 'Penghapus', 'stock' => 20],
+    ['id' => '1', 'nama' => 'Pensil', 'stok' => 12],
+    ['id' => '2', 'nama' => 'Buku', 'stok' => 23],
+    ['id' => '3', 'nama' => 'Pulpen', 'stok' => 32],
+    ['id' => '4', 'nama' => 'Spidol', 'stok' => 45]
 ];
 
 echo json_encode($barang);

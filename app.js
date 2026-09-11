@@ -1,4 +1,5 @@
 const container = document.querySelector('#daftar-barang');
+let listBarang = [];
 
 async function ambilData() {
     try {
@@ -6,12 +7,8 @@ async function ambilData() {
         if (!response.ok) {
             throw new Error(`Server merespons dengan pesan: ${response.status}`);
         }
-        const data = await response.json();
-        data.forEach(item => {
-            const list = document.createElement('li');
-            list.textContent = `${item.nama} (Stok: ${item.stock})`;
-            container.appendChild(list);
-        });
+        listBarang = await response.json();
+        renderList(listBarang);
     } catch (error) {
         console.error('Gagal mengambil data:', error);
     }
@@ -19,10 +16,21 @@ async function ambilData() {
 
 ambilData();
 
+function renderList(items){
+    items.forEach(item => {
+        const list = document.createElement('li');
+        list.textContent = item.nama;
+        list.dataset.id = item.id;
+        container.appendChild(list);
+    })
+}
+
 container.addEventListener('click', (e) => {
     if(e.target.tagName === 'LI') {
+        const id = e.target.dataset.id;
         const detail = document.getElementById('detail');
-        detail.textContent = e.target.textContent;
+        const item = listBarang.find(b => b.id == id);
+        detail.textContent = `${item.nama} (Stok: ${item.stok})`
     }
 });
 
