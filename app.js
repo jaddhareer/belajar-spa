@@ -80,7 +80,7 @@ function render(page) {
 
         tombol.addEventListener('click', (e)=> {
             e.preventDefault();
-            const newItem = { id: Date.now(), nama: 'Barang Baru', stok: 0 };
+            const newItem = { kode_barang: Date.now(), nama_barang: 'Barang Baru', jumlah: 0 };
             listBarang.push(newItem);
             renderList([newItem]);
         });
