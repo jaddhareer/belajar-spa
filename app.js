@@ -5,7 +5,7 @@ let listBarang = [];
 
 async function ambilData() {
     try {
-        const response = await fetch('api.php');
+        const response = await fetch('http://localhost/belajar-oophp/api/stock.php');
         if (!response.ok) {
             throw new Error(`Server merespons dengan pesan: ${response.status}`);
         }
@@ -23,8 +23,8 @@ function renderList(items){
     const container = document.querySelector('#daftar-barang');
     items.forEach(item => {
         const list = document.createElement('li');
-        list.textContent = item.nama;
-        list.dataset.id = item.id;
+        list.textContent = item.nama_barang;
+        list.dataset.id = item.kode_barang;
         container.appendChild(list);
     })
 }
@@ -71,8 +71,8 @@ function render(page) {
             if(e.target.tagName === 'LI') {
                 const id = e.target.dataset.id;
                 const detail = document.getElementById('detail');
-                const item = listBarang.find(b => b.id == id);
-                detail.textContent = `${item.nama} (Stok: ${item.stok})`
+                const item = listBarang.find(b => b.kode_barang == id);
+                detail.textContent = `${item.nama_barang} (Stok: ${item.jumlah})`
             }
         });
 
