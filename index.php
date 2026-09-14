@@ -7,7 +7,7 @@
 </head>
 <body>
     <a href="/" data-link>Beranda</a>
-    <a href="/tentang" data-link>Tentang</a>
+    <a href="/transaksi" data-link>Transaksi</a>
     <div id="app">
         <!-- aplikasi akan muncul disini -->
     </div>

@@ -2,25 +2,41 @@ const BASE_PATH = '/belajar-spa';
 
 // state
 let listBarang = [];
+let listTransaksi = [];
 
-async function ambilData() {
+async function ambilDataStock() {
     try {
         const response = await fetch('http://localhost/belajar-oophp/api/stock.php');
         if (!response.ok) {
             throw new Error(`Server merespons dengan pesan: ${response.status}`);
         }
         const list = await response.json();
-        listBarang.push(...list);
-        renderList(listBarang);
+        listBarang = list;
     } catch (error) {
         console.error('Gagal mengambil data:', error);
     }
 };
 
-ambilData();
+ambilDataStock();
+
+async function ambilDataTransaksi() {
+    try {
+        const response = await fetch('http://localhost/belajar-oophp/api/transaksi.php');
+        if (!response.ok) {
+            throw new Error(`Server merespons dengan pesan: ${response.status}`);
+        }
+        const list = await response.json();
+        listTransaksi = list;
+    } catch (error) {
+        console.error('Gagal mengambil data:', error);
+    }
+};
+
+ambilDataTransaksi();
 
 function renderList(items){
     const container = document.querySelector('#daftar-barang');
+    if (!container) return;
     items.forEach(item => {
         const list = document.createElement('li');
         list.textContent = item.nama_barang;
@@ -52,12 +68,15 @@ document.addEventListener('click', (e) => {
 
 render(getCurrentPath());
 
-function render(page) {
+async function render(page) {
     if(page === '/'){
+        if (listBarang.length === 0) {
+            await ambilDataStock();
+        }
         setContent(`
             <h2>ini halaman beranda</h2>
             <h2>Daftar Barang</h2>
-            <button id="tombol-tambah">Tambah Barang</button>
+            <a href="/belajar-spa/transaksi" data-link><button>Tambah Barang</button></a>
             <ul id="daftar-barang">
                 <!-- list dari API akan digenerate disini -->
             </ul>
@@ -78,15 +97,61 @@ function render(page) {
 
         const tombol = document.getElementById('tombol-tambah');
 
-        tombol.addEventListener('click', (e)=> {
-            e.preventDefault();
-            const newItem = { kode_barang: Date.now(), nama_barang: 'Barang Baru', jumlah: 0 };
-            listBarang.push(newItem);
-            renderList([newItem]);
-        });
+    } else if (page === '/transaksi') {
+        if (listBarang.length === 0) {
+            await ambilDataStock();
+        }
+        const opsiBarang = listBarang.map(barang =>
+            `<option value="${barang.nama_barang}">${barang.nama_barang}</option>`
+        ).join('');
+        if (listTransaksi.length === 0) {
+            await ambilDataTransaksi();
+        }
 
-    } else if (page === '/tentang') {
-        setContent(`<h2>ini halaman tentang</h2>`);
+        const dataTransaksi = listTransaksi.map((transaksi, index) =>
+            `<tbody>
+            <td style="padding: 0 10px;">${index + 1}</td>
+            <td style="padding: 0 10px;">${transaksi.nama_barang}</td>
+            <td style="padding: 0 10px;">${transaksi.tipe}</td>
+            <td style="padding: 0 10px;">${transaksi.jumlah}</td>
+            <td style="padding: 0 10px;">${transaksi.tanggal}</td>
+            <td style="padding: 0 10px;">${transaksi.id_transaksi}</td>
+            </tbody>`
+        ).join('');
+
+        console.log(listTransaksi);
+
+        setContent(`
+            <h2>Input Transaksi</h2>
+            <hr>
+            <form action="http://localhost/belajar-oophp/controller/transaksiController.php" method="post">
+                <label for="tipe">Type</label> <br>
+                <select name="tipe" id="tipe"> 
+                    <option value="in">In</option>
+                    <option value="out">Out</option>
+                </select> <br>
+                <label for="nama_barang">barang</label><br>
+                <input type="text" name="nama_barang" list="barang" autocomplete="off" required>
+                <datalist id="barang">
+                    ${opsiBarang}
+                </datalist> <br>
+                <label for="jumlah">jumlah</label><br>
+                <input type="number" name="jumlah" id="jumlah"><br><br>
+                <button type="submit">simpan</button>
+            </form>
+            <h2>data transaksi</h2>
+            <table>
+                <thead>
+                    <th style="padding: 0 10px;">No</th>
+                    <th style="padding: 0 10px;">Barang</th>
+                    <th style="padding: 0 10px;">Tipe</th>
+                    <th style="padding: 0 10px;">Jumlah</th>
+                    <th style="padding: 0 10px;">Waktu</th>
+                    <th style="padding: 0 10px;">ID</th>
+                </thead>
+                ${dataTransaksi}
+            </table>
+            `);
     } else {
         setContent(`<h2>ini halaman apaan?</h2>`);
     }
