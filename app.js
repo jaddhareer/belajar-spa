@@ -1,4 +1,6 @@
 const BASE_PATH = '/belajar-spa';
+
+// state
 let listBarang = [];
 
 async function ambilData() {
@@ -16,6 +18,16 @@ async function ambilData() {
 };
 
 ambilData();
+
+function renderList(items){
+    const container = document.querySelector('#daftar-barang');
+    items.forEach(item => {
+        const list = document.createElement('li');
+        list.textContent = item.nama;
+        list.dataset.id = item.id;
+        container.appendChild(list);
+    })
+}
 
 // fungsi untuk navigasi melalui tombol
 function navigatePage(page) {
@@ -52,18 +64,9 @@ function render(page) {
             <div id="detail"></div>
         `);
 
-        const container = document.querySelector('#daftar-barang');
         renderList(listBarang);
 
-        function renderList(items){
-            items.forEach(item => {
-                const list = document.createElement('li');
-                list.textContent = item.nama;
-                list.dataset.id = item.id;
-                container.appendChild(list);
-            })
-        }
-
+        const container = document.querySelector('#daftar-barang');
         container.addEventListener('click', (e) => {
             if(e.target.tagName === 'LI') {
                 const id = e.target.dataset.id;
