@@ -1,4 +1,21 @@
 const BASE_PATH = '/belajar-spa';
+let listBarang = [];
+
+async function ambilData() {
+    try {
+        const response = await fetch('api.php');
+        if (!response.ok) {
+            throw new Error(`Server merespons dengan pesan: ${response.status}`);
+        }
+        const list = await response.json();
+        listBarang.push(...list);
+        renderList(listBarang);
+    } catch (error) {
+        console.error('Gagal mengambil data:', error);
+    }
+};
+
+ambilData();
 
 // fungsi untuk navigasi melalui tombol
 function navigatePage(page) {
@@ -25,33 +42,18 @@ render(getCurrentPath());
 
 function render(page) {
     if(page === '/'){
-        document.getElementById("app").innerHTML = `
-        <h2>ini halaman beranda</h2>
-        <h2>Daftar Barang</h2>
-        <button id="tombol-tambah">Tambah Barang</button>
-        <ul id="daftar-barang">
-            <!-- list dari API akan digenerate disini -->
-        </ul>
-        <div id="detail"></div>`;
+        setContent(`
+            <h2>ini halaman beranda</h2>
+            <h2>Daftar Barang</h2>
+            <button id="tombol-tambah">Tambah Barang</button>
+            <ul id="daftar-barang">
+                <!-- list dari API akan digenerate disini -->
+            </ul>
+            <div id="detail"></div>
+        `);
 
         const container = document.querySelector('#daftar-barang');
-        let listBarang = [];
-
-        async function ambilData() {
-            try {
-                const response = await fetch('api.php');
-                if (!response.ok) {
-                    throw new Error(`Server merespons dengan pesan: ${response.status}`);
-                }
-                const list = await response.json();
-                listBarang.push(...list);
-                renderList(listBarang);
-            } catch (error) {
-                console.error('Gagal mengambil data:', error);
-            }
-        };
-
-        ambilData();
+        renderList(listBarang);
 
         function renderList(items){
             items.forEach(item => {
@@ -75,14 +77,21 @@ function render(page) {
 
         tombol.addEventListener('click', (e)=> {
             e.preventDefault();
-            const addlist = document.createElement('li');
-            addlist.textContent = 'Barang Baru';
-            container.appendChild(addlist);
+            const newItem = { id: Date.now(), nama: 'Barang Baru', stok: 0 };
+            listBarang.push(newItem);
+            renderList([newItem]);
         });
 
     } else if (page === '/tentang') {
-        document.getElementById("app").innerHTML = '<h2>ini halaman tentang</h2>';
+        setContent(`<h2>ini halaman tentang</h2>`);
     } else {
-        document.getElementById("app").innerHTML = '<h2>ini halaman apaan?</h2>';
+        setContent(`<h2>ini halaman apaan?</h2>`);
     }
+};
+
+
+// utilities
+
+function setContent(html) {
+    document.getElementById('app').innerHTML = html;
 };
