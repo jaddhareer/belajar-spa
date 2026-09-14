@@ -1,3 +1,39 @@
+const BASE_PATH = '/belajar-spa';
+
+// fungsi untuk navigasi melalui tombol
+function navigatePage(page) {
+    history.pushState({}, '', BASE_PATH + page);
+    render(page);
+};
+
+function getCurrentPath() {
+    return location.pathname.replace(BASE_PATH, '') || '/';
+};
+
+window.addEventListener('popstate', () => {
+    render(getCurrentPath());
+});
+
+document.addEventListener('click', (e) => {
+    if (e.target.matches('a[data-link]')) {
+        e.preventDefault();
+        navigatePage(e.target.getAttribute('href'));
+    }
+});
+
+render(getCurrentPath());
+
+function render(page) {
+    if(page === '/'){
+        document.getElementById("app").innerHTML = '<h2>ini halaman beranda</h2>';
+    } else if (page === '/tentang') {
+        document.getElementById("app").innerHTML = '<h2>ini halaman tentang</h2>';
+    } else {
+        document.getElementById("app").innerHTML = '<h2>ini halaman apaan?</h2>';
+    }
+};
+
+
 const container = document.querySelector('#daftar-barang');
 let listBarang = [];
 
@@ -7,7 +43,8 @@ async function ambilData() {
         if (!response.ok) {
             throw new Error(`Server merespons dengan pesan: ${response.status}`);
         }
-        listBarang = await response.json();
+        list = await response.json();
+        listBarang.push(...list);
         renderList(listBarang);
     } catch (error) {
         console.error('Gagal mengambil data:', error);
@@ -15,6 +52,8 @@ async function ambilData() {
 }
 
 ambilData();
+
+console.log(listBarang);
 
 function renderList(items){
     items.forEach(item => {
@@ -42,3 +81,4 @@ tombol.addEventListener('click', (e)=> {
     addlist.textContent = 'Barang Baru';
     container.appendChild(addlist);
 });
+
