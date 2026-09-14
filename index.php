@@ -11,12 +11,6 @@
     <div id="app">
         <!-- aplikasi akan muncul disini -->
     </div>
-    <h2>Daftar Barang</h2>
-        <button id="tombol-tambah">Tambah Barang</button>
-        <ul id="daftar-barang">
-            <!-- list dari API akan digenerate disini -->
-        </ul>
-        <div id="detail"></div>
     <script src="app.js">
     </script>
 </body>

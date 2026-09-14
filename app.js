@@ -25,60 +25,64 @@ render(getCurrentPath());
 
 function render(page) {
     if(page === '/'){
-        document.getElementById("app").innerHTML = '<h2>ini halaman beranda</h2>';
+        document.getElementById("app").innerHTML = `
+        <h2>ini halaman beranda</h2>
+        <h2>Daftar Barang</h2>
+        <button id="tombol-tambah">Tambah Barang</button>
+        <ul id="daftar-barang">
+            <!-- list dari API akan digenerate disini -->
+        </ul>
+        <div id="detail"></div>`;
+
+        const container = document.querySelector('#daftar-barang');
+        let listBarang = [];
+
+        async function ambilData() {
+            try {
+                const response = await fetch('api.php');
+                if (!response.ok) {
+                    throw new Error(`Server merespons dengan pesan: ${response.status}`);
+                }
+                const list = await response.json();
+                listBarang.push(...list);
+                renderList(listBarang);
+            } catch (error) {
+                console.error('Gagal mengambil data:', error);
+            }
+        };
+
+        ambilData();
+
+        function renderList(items){
+            items.forEach(item => {
+                const list = document.createElement('li');
+                list.textContent = item.nama;
+                list.dataset.id = item.id;
+                container.appendChild(list);
+            })
+        }
+
+        container.addEventListener('click', (e) => {
+            if(e.target.tagName === 'LI') {
+                const id = e.target.dataset.id;
+                const detail = document.getElementById('detail');
+                const item = listBarang.find(b => b.id == id);
+                detail.textContent = `${item.nama} (Stok: ${item.stok})`
+            }
+        });
+
+        const tombol = document.getElementById('tombol-tambah');
+
+        tombol.addEventListener('click', (e)=> {
+            e.preventDefault();
+            const addlist = document.createElement('li');
+            addlist.textContent = 'Barang Baru';
+            container.appendChild(addlist);
+        });
+
     } else if (page === '/tentang') {
         document.getElementById("app").innerHTML = '<h2>ini halaman tentang</h2>';
     } else {
         document.getElementById("app").innerHTML = '<h2>ini halaman apaan?</h2>';
     }
 };
-
-
-const container = document.querySelector('#daftar-barang');
-let listBarang = [];
-
-async function ambilData() {
-    try {
-        const response = await fetch('api.php');
-        if (!response.ok) {
-            throw new Error(`Server merespons dengan pesan: ${response.status}`);
-        }
-        list = await response.json();
-        listBarang.push(...list);
-        renderList(listBarang);
-    } catch (error) {
-        console.error('Gagal mengambil data:', error);
-    }
-}
-
-ambilData();
-
-console.log(listBarang);
-
-function renderList(items){
-    items.forEach(item => {
-        const list = document.createElement('li');
-        list.textContent = item.nama;
-        list.dataset.id = item.id;
-        container.appendChild(list);
-    })
-}
-
-container.addEventListener('click', (e) => {
-    if(e.target.tagName === 'LI') {
-        const id = e.target.dataset.id;
-        const detail = document.getElementById('detail');
-        const item = listBarang.find(b => b.id == id);
-        detail.textContent = `${item.nama} (Stok: ${item.stok})`
-    }
-});
-
-const tombol = document.getElementById('tombol-tambah');
-
-tombol.addEventListener('click', (e)=> {
-    e.preventDefault();
-    const addlist = document.createElement('li');
-    addlist.textContent = 'Barang Baru';
-    container.appendChild(addlist);
-});
-
