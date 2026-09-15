@@ -76,6 +76,7 @@ async function render(page) {
         setContent(`
             <h2>ini halaman beranda</h2>
             <h2>Daftar Barang</h2>
+            <hr>
             <a href="/belajar-spa/transaksi" data-link><button>Tambah Barang</button></a>
             <ul id="daftar-barang">
                 <!-- list dari API akan digenerate disini -->
@@ -94,8 +95,6 @@ async function render(page) {
                 detail.textContent = `${item.nama_barang} (Stok: ${item.jumlah})`
             }
         });
-
-        const tombol = document.getElementById('tombol-tambah');
 
     } else if (page === '/transaksi') {
         if (listBarang.length === 0) {
@@ -122,6 +121,7 @@ async function render(page) {
         console.log(listTransaksi);
 
         setContent(`
+            <h2>ini halaman transaksi</h2>
             <h2>Input Transaksi</h2>
             <hr>
             <form action="http://localhost/belajar-oophp/controller/transaksiController.php" method="post">
@@ -163,3 +163,28 @@ async function render(page) {
 function setContent(html) {
     document.getElementById('app').innerHTML = html;
 };
+
+document.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const formData = new FormData(e.target);
+
+    try {
+        const response = await fetch('http://localhost/belajar-oophp/controller/transaksiController.php', {
+            method: 'POST',
+            body: formData
+        });
+        const result = await response.json();
+
+        if (!response.ok) {
+            alert(result.error);
+            return;
+        }
+
+        await ambilDataStock();       // paksa fetch ulang, bukan pakai cache lama
+        await ambilDataTransaksi();
+        navigatePage('/transaksi');
+    } catch (error) {
+        console.error('Gagal submit transaksi:', error);
+    }
+});
