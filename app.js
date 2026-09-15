@@ -107,16 +107,16 @@ async function render(page) {
             await ambilDataTransaksi();
         }
 
-        const dataTransaksi = listTransaksi.map((transaksi, index) =>
-            `<tbody>
-            <td style="padding: 0 10px;">${index + 1}</td>
-            <td style="padding: 0 10px;">${transaksi.nama_barang}</td>
-            <td style="padding: 0 10px;">${transaksi.tipe}</td>
-            <td style="padding: 0 10px;">${transaksi.jumlah}</td>
-            <td style="padding: 0 10px;">${transaksi.tanggal}</td>
-            <td style="padding: 0 10px;">${transaksi.id_transaksi}</td>
-            </tbody>`
-        ).join('');
+        const dataTransaksi = listTransaksi.map((transaksi, index) => `
+            <tr>
+                <td style="padding: 0 10px;">${index + 1}</td>
+                <td style="padding: 0 10px;">${transaksi.nama_barang}</td>
+                <td style="padding: 0 10px;">${transaksi.tipe}</td>
+                <td style="padding: 0 10px;">${transaksi.jumlah}</td>
+                <td style="padding: 0 10px;">${transaksi.tanggal}</td>
+                <td style="padding: 0 10px;">${transaksi.id_transaksi}</td>
+            </tr>
+        `).join('');
 
         console.log(listTransaksi);
 
@@ -142,14 +142,16 @@ async function render(page) {
             <h2>data transaksi</h2>
             <table>
                 <thead>
-                    <th style="padding: 0 10px;">No</th>
-                    <th style="padding: 0 10px;">Barang</th>
-                    <th style="padding: 0 10px;">Tipe</th>
-                    <th style="padding: 0 10px;">Jumlah</th>
-                    <th style="padding: 0 10px;">Waktu</th>
-                    <th style="padding: 0 10px;">ID</th>
+                    <tr>
+                        <th style="padding: 0 10px;">No</th>
+                        <th style="padding: 0 10px;">Barang</th>
+                        <th style="padding: 0 10px;">Tipe</th>
+                        <th style="padding: 0 10px;">Jumlah</th>
+                        <th style="padding: 0 10px;">Waktu</th>
+                        <th style="padding: 0 10px;">ID</th>
+                    </tr>
                 </thead>
-                ${dataTransaksi}
+                <tbody>${dataTransaksi}</tbody>
             </table>
             `);
     } else {
